@@ -4,9 +4,13 @@ This is the **Orion Project**. It is essentially a homelab and my attempt at bui
 
 **What it accomplishes**: A working simulation of a small-to-medium-sized company's network. This includes Active Directory domains, user workstations of different OSes, different servers, monitoring and security stacks, and other technologies you'd find in actual corporate environments. 
 
-**Future Aims**: Shift to cloud/containers with Kubernetes, add isolated malware analysis, full automation, red/blue team playgrounds. Right now the on-prem core is done—VMs provisioned, AD humming, Wazuh throwing alerts. Vulnerable phase and self-attacks next.
+**Future Aims**: 
+  - Shift different aspects of the homelab into Kubernetes clusters and docker containers for proper maintainability and replicability of the environment.
+  - Shift the NAT Network-based environment to an isolated environment with a pfsense firewall between the host and the project for proper malware and virus analysis
+  - Full automation of certain activities like email sending and receiving from example users, etc.
+  - Full working environments with vulnerability snapshots for red/blue team playgrounds and simulations.
 
-I've got the full enterprise network up: VMs, domains, Active Directory—all rock solid. Currently knee-deep in the vulnerable environment build: controlled weaknesses for attack sims, tuning Wazuh detections/alerts ahead of attacking my own Orion net. Every step below has my exact process, configs I used, problems I hit and fixed, and what clicked for me. Snapping screenshots as I go.
+**What is currently accomplished**:I've got the full enterprise network up: VMs, domains, Active Directory—all rock solid. Currently knee-deep in the vulnerable environment build: controlled weaknesses for attack sims, tuning Wazuh detections/alerts ahead of attacking my own Orion net. Every step below has my exact process, configs I used, problems I hit and fixed, and what clicked for me. Snapping screenshots as I go.
 
 ## What I've Learned So Far
 - AD setup showed me DNS screwups kill the whole party—time sync too.
