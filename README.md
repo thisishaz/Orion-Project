@@ -2,8 +2,9 @@
 
 This is the **Orion Project**. It is essentially a homelab and my attempt at building, managing, and maintaining a simulation of a real-deal enterprise/business network. From spinning up common IT infrastructure to conducting simulated cyberattacks and putting up proper security measures, I'm doing it all hands-on to actually understand cybersecurity (both defensive and offensive) and networking in practice. Such examples of what I would be doing is provisioning networks, setting up proper domain configs, adding deliberate vulnerabilities, setting up detection with SIEM, and eventually attacking my own setup to see what breaks.
 
-**What it accomplishes**: A working simulation of a small-to-medium-sized company's network. This includes Active Directory domains, user workstations of different OSes, different servers, monitoring and security stacks, and other technologies
-you'd see in actual corporate environments. Near future goal is to make it fully production-grade: shift to cloud/containers with Kubernetes, add isolated malware analysis, full automation, red/blue team playgrounds. Right now the on-prem core is done—VMs provisioned, AD humming, Wazuh throwing alerts. Vulnerable phase and self-attacks next.
+**What it accomplishes**: A working simulation of a small-to-medium-sized company's network. This includes Active Directory domains, user workstations of different OSes, different servers, monitoring and security stacks, and other technologies you'd find in actual corporate environments. 
+
+**Future Aims**: Shift to cloud/containers with Kubernetes, add isolated malware analysis, full automation, red/blue team playgrounds. Right now the on-prem core is done—VMs provisioned, AD humming, Wazuh throwing alerts. Vulnerable phase and self-attacks next.
 
 I've got the full enterprise network up: VMs, domains, Active Directory—all rock solid. Currently knee-deep in the vulnerable environment build: controlled weaknesses for attack sims, tuning Wazuh detections/alerts ahead of attacking my own Orion net. Every step below has my exact process, configs I used, problems I hit and fixed, and what clicked for me. Snapping screenshots as I go.
 
@@ -11,6 +12,8 @@ I've got the full enterprise network up: VMs, domains, Active Directory—all ro
 - AD setup showed me DNS screwups kill the whole party—time sync too.
 - Wazuh's great for vuln scans but Windows agents were being dumb til I tweaked policies.
 - Building vulns: Gotta be surgical or detection tuning turns into a nightmare.
+
+
 
 ## Lab Progress
 
