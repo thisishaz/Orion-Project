@@ -9,20 +9,33 @@ This is the **Orion Project**. It is essentially a homelab and my attempt at bui
   - Shift the NAT Network-based environment to an isolated environment with a pfsense firewall between the host and the project for proper malware and virus analysis
   - Full automation of certain activities like email sending and receiving from example users, etc.
   - Full working environments with vulnerability snapshots for red/blue team playgrounds and simulations.
+  - Conduct more simulated cyberattacks and proper log analysis for certain attacks (like malware, etc.)
 
-**What is currently accomplished**:I've got the full enterprise network up: VMs, domains, Active Directory—all rock solid. Currently knee-deep in the vulnerable environment build: controlled weaknesses for attack sims, tuning Wazuh detections/alerts ahead of attacking my own Orion net. Every step below has my exact process, configs I used, problems I hit and fixed, and what clicked for me. Snapping screenshots as I go.
+**What is currently accomplished**: 
+  - Full on-premise enterprise network has been successfully set up. This is includes:
+    -  Microsoft DC Server (For Active Directory).
+    -  VM Workstations simulating real-life user and worker accounts.
+    -  VM Servers designed for specific purposes (Email server)
+    -  VM Security Box used for monitoring logs, alerts and incident responses.
+    -  Attacker VM used for simulating cyberattacks.
+  
+  - Vulnerable Environment completed and setup, to simulate how an attacker would gain initial access within the Orion Network, escalate their privilege, and exfiltrate data and persist within an already comporomised      system.
+
 
 ## What I've Learned So Far
-- AD setup showed me DNS screwups kill the whole party—time sync too.
-- Wazuh's great for vuln scans but Windows agents were being dumb til I tweaked policies.
-- Building vulns: Gotta be surgical or detection tuning turns into a nightmare.
+- Microsoft Domain Controller and AD setup has taught me how to setup domains for a specific network, how to configure and establish DNS and DHCP routes, and the prerequisites to ensure a working and stable enterprise network.
+- VM Setup has taught me how to provision VMs pertaining to their OSes, and how to setup the IP Addresses so each respective VM is properly connected to the domain network.
+- Email Server simulation setup taught me how email servers properly work, how their different protocols function, and how docker containers are composed and setup.
+- Wazuh Manager setup taught me how to properly look for logs pertaining to certain parameters, how to setup specific alerts/monitors and file integrity checks based on specific triggers (such as parameters), and how to setup actions once an alert is caused.
+- Learned how attackers learn about a network through reconnaissance (using tools like nmap towards specific ports), how an attacker gains initial network through brute-force tactics (using tools like hydra, and email phishing), how an attacker uses inference to escalate their privilege within the network by moving from workstation to workstation and learning more about the network (using nxc or evil-winrm to gain access to windows workstations), how an attacker exfiltrates data using tools like scp, and how an attacker maintains privilege within the network (creating a reverse shell protocol that activates at specific times).
+
 
 
 
 ## Lab Progress
 
 ### 1. Environment Setup (Complete)
-**Status: ✅ Done Weeks Ago**
+**Status: ✅ Done**
 
 Fired up all Orion VMs in VirtualBox (NAT network 10.0.0.0/24, DHCP 10.0.0.100-200).
 
@@ -36,8 +49,8 @@ Key VMs & Specs:
 | Orion-LinuxClient | Ubuntu Desktop 22.04 | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
 
 **Steps**:
-1. Made NAT network "orion-nat".
-2. Grabbed ISOs (MS Eval Center for Windows, Ubuntu ISOs).
+1. Made NAT network "orion-network".
+2. Grabbed ISOs (MS Eval Center for Windows, Ubuntu ISOs, and other respective ISOs such as Security Onion, and Kali Linux OS).
 3. Set static IPs/gateways in VM settings or netplan/ifconfig.
 4. Ping/DNS tests across everything.
 
