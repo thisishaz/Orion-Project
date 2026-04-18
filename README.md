@@ -71,31 +71,37 @@ Key VMs & Specs:
 3. DNS Setup: Use the server manager and properly configure the 'DNS Server' properly. Ensure that DNS listens to all interfaces (no port forwarding yet).
 4. DHCP Setup: Go to roles and add DHCP Server. Set scope to 10.0.0.0/24 (range 10.0.0.100-200, exclude 10.0.0.1-20), router 10.0.0.1, DNS 10.0.0.5. Activate scope.
 5. Connect User Workstations:
-  - **Windows**: Set DNS 10.0.0.5 only, reboot. Sysdm.cpl > Change Settings > Domain: corp.orion-dc.com. Reboot.
-  - **Linux**: Set domain connection to non-native windows using Samba/Winbind configuration via Kerberos
+    - **Windows**: Set DNS 10.0.0.5 only, reboot. Sysdm.cpl > Change Settings > Domain: corp.orion-dc.com. Reboot.
+    - **Linux**: Set domain connection to non-native windows using Samba/Winbind configuration via Kerberos
 
 
 ### 3. Wazuh Deployment & Base Detection (Complete)
-**Status: ✅ Agents Everywhere**
+**Status: ✅ Done**
 
-Manager on SecBox, agents on all.
+Manager on Orion-SecBox (Ubuntu 10.0.0.10), agents deployed to all endpoints (DC, Admin, HR, LinuxClient). Central SIEM for logs, vulns, FIM.
 
 **Steps**:
-1. Ubuntu: GPG key curl, repo add, `apt install wazuh-manager`.
-2. Services up, dashboard at https://10.0.0.10:5601.
-3. Agents: Win MSI from dashboard, Linux apt wazuh-agent, `/var/ossec/bin/agent-auth -m 10.0.0.10`.
-4. Policies: Vuln detect on (syscheck, rootkit), Win inventory (NVD).
-5. Rules tuned for failed logons (5716), service installs.
+1. Prepare SecBox Server (setting IP to 10.0.0.10)
+2. Add Wazuh Repo
+3. Install Wazuh Manager (including the indexer and dashboard)
+4. Ensure that wazuh automatically starts as the system is booted up through systemctl symlink creation. Ensure that access is given to the localhost
+5. Deploy Agents:
+    - **Windows**: Install the agent from the dashboard > agents section, follow the steps and run the final installation command as administrator.
+    - **Ubuntu**: Same thing as windows, follow the installation guide within the wazuh dashboard > agents section.
+6. Restart agents and wazuh manager to ensure that devices are properly connected for further configuration
+7. Create base configs. This includes:
+    - Policies for different groups (based on OS like windows and Linux)
+    - Alerts for specific potential access points for an attacker (such as WinRM Logon, and ssd connection)
+    - Set up triggers for specific parameters for those specific alerts.
+    - Set up File Integrity Management on a dummy file acting as sensitive data within the dc server.
+8. **Tune Rules** (for certain access points and workstation access):
+    - Failed ssd attempts
+    - WinRM Logon
+    - File accessed (dummy data)
 
-**Issues**: Win vuln alerts empty—agent restart + policy sync fixed.
-**Learned**: Auto CVE matching on packages. Need custom AD decoders next.
-
-[image:2]
-
-Wazuh vulns page—old .NET already flagged.
 
 ### 4. Creating Vulnerable Environment
-**Status: ✅ Core Weaknesses In**
+**Status: ✅ Done**
 
 Controlled vulns/misconfigs for attack chains: foothold → lateral → domain dom. Firewalls off for now.
 
