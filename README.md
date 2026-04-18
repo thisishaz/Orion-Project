@@ -45,10 +45,11 @@ Key VMs & Specs:
 |---------|----|---------|------|----|------|
 | orion-dc | Windows Server 2025 | 2/4GB | 50GB | 10.0.0.5 | Domain Controller (AD/DNS/DHCP) |
 | orion-corp-svr | Ubuntu 24.04.01 Server | 1/2GB | 25GB | 10.0.0.8 | Corporate Server |
-| orion-sec-box | Ubuntu 24.04.01 Desktop | 2/4GB | 80GB | 10.0.0.10 | Security Server |
-| Orion-LinuxClient | Ubuntu Desktop 22.04 | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
-| Orion-LinuxClient | Ubuntu Desktop 22.04 | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
-| Orion-LinuxClient | Ubuntu Desktop 22.04 | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
+| orion-sec-box | Ubuntu 24.04.01 Desktop | 2/4GB | 80GB | 10.0.0.10 | Dedicated Security Server |
+| orion-sec-work | Security Onion | 1/2GB | 55GB | 10.0.0.103 | Security Playground |
+| orion-win-client | Windows 11 Enterprise (Workstation) | 2/4GB | 80GB | 10.0.0.100 | Windows Workstation |
+| orion-linux-client | Ubuntu Desktop 24.04.01 Desktop | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
+| orion-attacker | Kali Linux | 1/2GB | 55GB | 10.0.0.50 | Attacker Environment |
 
 **Steps**:
 1. Made NAT network "orion-network".
