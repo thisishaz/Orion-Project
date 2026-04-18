@@ -37,15 +37,17 @@ This is the **Orion Project**. It is essentially a homelab and my attempt at bui
 ### 1. Environment Setup (Complete)
 **Status: ✅ Done**
 
-Fired up all Orion VMs in VirtualBox (NAT network 10.0.0.0/24, DHCP 10.0.0.100-200).
+Provisioned all Orion VMs in VirtualBox 
+  - NAT network 10.0.0.0/24, Static DNS from 10.0.0.100-200 (Temporarily, might change to DHCP)
 
 Key VMs & Specs:
 | VM Name | OS | CPU/RAM | Disk | IP | Role |
 |---------|----|---------|------|----|------|
-| Orion-DC | Windows Server 2025 | 2/4GB | 50GB | 10.0.0.5 | Domain Controller (AD/DNS/DHCP) |
-| Orion-Admin | Windows 11 Ent | 2/4GB | 80GB | 10.0.0.8 | Admin Workstation |
-| Orion-HR | Windows 11 Ent | 2/4GB | 80GB | 10.0.0.100 | User Workstation |
-| Orion-SecBox | Ubuntu 22.04 | 2/4GB | 80GB | 10.0.0.10 | Security Server (Wazuh) |
+| orion-dc | Windows Server 2025 | 2/4GB | 50GB | 10.0.0.5 | Domain Controller (AD/DNS/DHCP) |
+| orion-corp-svr | Ubuntu 24.04.01 Server | 1/2GB | 25GB | 10.0.0.8 | Corporate Server |
+| orion-sec-box | Ubuntu 24.04.01 Desktop | 2/4GB | 80GB | 10.0.0.10 | Security Server |
+| Orion-LinuxClient | Ubuntu Desktop 22.04 | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
+| Orion-LinuxClient | Ubuntu Desktop 22.04 | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
 | Orion-LinuxClient | Ubuntu Desktop 22.04 | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
 
 **Steps**:
