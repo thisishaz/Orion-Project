@@ -57,7 +57,7 @@ Key VMs & Specs:
 4. Set static IPs/gateways in respective VMs so that it connects to the DC.
 5. Ping/DNS tests across everything to ensure everything is properly configured and connected.
 
-Orion network layout ensures that everything is properly segmented and checked for, so visualization of said enterprise network is easy to understand and maintain.
+- Orion network layout ensures that everything is properly segmented and checked for, so visualization of said enterprise network is easy to understand and maintain.
 
 
 ### 2. Active Directory, Domain Setup and Workstation Connection (Complete)
@@ -66,19 +66,14 @@ Orion network layout ensures that everything is properly segmented and checked f
 'orion-dc' handles AD, DNS, and DHCP. It serves as the backbone of the network as it handles authentication, authorization, name resolution and acts as the main gateway between the host system and the enterprise network (will be fully adapted and further isolated in the future).
 
 **Steps**:
-1. Prep Orion-DC by setting Static IP of 10.0.0.5/24, default gateway of 10.0.0.1 (host NAT), and DNS temp 10.0.0.5.
-2. AD DS Role: Add 'Active Directory Domain Services' to the server manager and complete the setup properly. Run dcpromo and create a new 'forest' of 'corp.orion-dc.com'.
-3. DNS Role: Use the server manager and properly configure the 'DNS Server' properly. Ensure that DNS listens to all interfaces (no port forwarding yet).
-4. DHCP Role: Add Roles > DHCP Server. Auth in AD (skip for now), scope 10.0.0.0/24 (range 10.0.0.100-200, exclude 10.0.0.1-20), router 10.0.0.1, DNS 10.0.0.5. Activate scope.
-6. Post-Promo: DNS zone auto-creates (corp.orion.local forward/reverse). Verify SRV records (nslookup). Restart Netlogon.
-7. Join Workstations:
-  - Win (Admin/HR): Set DNS 10.0.0.5 only, reboot. Sysdm.cpl > Change Settings > Domain: corp.orion.local (Administrator/@Deeboodah1!). Reboot.
-  - Linux (Orion-LinuxClient):
-7. Users & Weaknesses: ADUC > Users: jane.orion@corp.orion.local (password123!), sec-admin. Service acct svc-roast, SPN setspn -s MSSQLSvc/orion-dc.corp.orion.local:1433 svc-roast.
-8. GPOs: GPMC > Default Domain Policy: Password min 8 chars, no complexity (Edit > Computer/User Config > Policies > Windows Settings > Security > Account Policies).
+1. Prepare 'orion-dc' by setting Static IP of 10.0.0.5/24, default gateway of 10.0.0.1 (host NAT), and DNS temp 10.0.0.5.
+2. AD DS Setup: Add 'Active Directory Domain Services' to the server manager and complete the setup properly. Run dcpromo and create a new 'forest' of 'corp.orion-dc.com'.
+3. DNS Setup: Use the server manager and properly configure the 'DNS Server' properly. Ensure that DNS listens to all interfaces (no port forwarding yet).
+4. DHCP Setup: Go to roles and add DHCP Server. Set scope to 10.0.0.0/24 (range 10.0.0.100-200, exclude 10.0.0.1-20), router 10.0.0.1, DNS 10.0.0.5. Activate scope.
+5. Connect User Workstations:
+  - **Windows**: Set DNS 10.0.0.5 only, reboot. Sysdm.cpl > Change Settings > Domain: corp.orion-dc.com. Reboot.
+  - **Linux**: Set domain connection to non-native windows using Samba/Winbind configuration via Kerberos
 
-**Issues**: Linux Kerberos bombed from systemd-resolved—forced DC DNS only. Time skew blocked joins (ntpd).
-**Learned**: AD lives on DNS, test SRV records (nslookup _ldap._tcp.corp.orion.local). Linux joins suck in prod too.
 
 ### 3. Wazuh Deployment & Base Detection (Complete)
 **Status: ✅ Agents Everywhere**
