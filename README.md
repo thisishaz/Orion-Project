@@ -29,16 +29,15 @@ This is the **Orion Project**. It is essentially a homelab and my attempt at bui
 - Wazuh Manager setup taught me how to properly look for logs pertaining to certain parameters, how to setup specific alerts/monitors and file integrity checks based on specific triggers (such as parameters), and how to setup actions once an alert is caused.
 - Learned how attackers learn about a network through reconnaissance (using tools like nmap towards specific ports), how an attacker gains initial network through brute-force tactics (using tools like hydra, and email phishing), how an attacker uses inference to escalate their privilege within the network by moving from workstation to workstation and learning more about the network (using nxc or evil-winrm to gain access to windows workstations), how an attacker exfiltrates data using tools like scp, and how an attacker maintains privilege within the network (creating a reverse shell protocol that activates at specific times).
 
-
-
-
 ## Lab Progress
 
 ### 1. Environment Setup (Complete)
 **Status: ✅ Done**
 
+
 Provisioned all Orion VMs in VirtualBox 
   - NAT network 10.0.0.0/24, Static DNS from 10.0.0.100-200 (Temporarily, might change to DHCP)
+
 
 Key VMs & Specs:
 | VM Name | OS | CPU/RAM | Disk | IP | Role |
@@ -51,36 +50,35 @@ Key VMs & Specs:
 | orion-linux-client | Ubuntu Desktop 24.04.01 Desktop | 1/2GB | 80GB | 10.0.0.101 | Linux Workstation |
 | orion-attacker | Kali Linux | 1/2GB | 55GB | 10.0.0.50 | Attacker Environment |
 
-**Steps**:
-1. Made NAT network "orion-network".
-2. Grabbed ISOs (MS Eval Center for Windows, Ubuntu ISOs, and other respective ISOs such as Security Onion, and Kali Linux OS).
-3. Set static IPs/gateways in VM settings or netplan/ifconfig.
-4. Ping/DNS tests across everything.
-
-**Issues**: Win11 TPM crap—fixed with registry hack (bcdedit /set hypervisorlaunchtype auto).
-**Learned**: Don't skimp DC resources or replication lags hard. Snapshots = sanity.
-
-[image:1]
-
-Orion network layout—segments keep it from being a flat hackfest.
-
-### 2. Active Directory & Domain Setup (Complete)
-**Status: ✅ Fully Functional**
-
-Orion-DC handles AD DS + DNS only—kept it lean.
 
 **Steps**:
-1. Server Manager > Add Roles > AD DS + DNS. dcpromo time.
-2. Domain: corp.orion.local. OUs for Users, Servers, Workstations.
-3. Joined Admin/HR: DNS to 10.0.0.5, sysdm domain join (Administrator/@Deeboodah1!).
-4. Linux join: realmd/sssd install, `realm join corp.orion.local -U Administrator`. DNS stub fix in /etc/systemd/resolved.conf.
-5. Users: jane.orion (password123!), sec-admin, weak service accounts with SPNs.
-6. GPOs: Lame password policy (8 chars min, no complexity—on purpose).
+1. Created the NAT network "orion-network", allowing it to have a subnet mask of 24 and a default gateway of 10.0.0.1.
+2. Grabbed and provisioned respective ISOs (MS Eval Center for Windows, Ubuntu ISOs, and other respective ISOs such as Security Onion, and Kali Linux OS) within Virtualbox.
+4. Set static IPs/gateways in respective VMs so that it connects to the DC.
+5. Ping/DNS tests across everything to ensure everything is properly configured and connected.
+
+Orion network layout ensures that everything is properly segmented and checked for, so visualization of said enterprise network is easy to understand and maintain.
+
+
+### 2. Active Directory, Domain Setup and Workstation Connection (Complete)
+**Status: ✅ Done**
+
+'orion-dc' handles AD, DNS, and DHCP. It serves as the backbone of the network as it handles authentication, authorization, name resolution and acts as the main gateway between the host system and the enterprise network (will be fully adapted and further isolated in the future).
+
+**Steps**:
+1. Prep Orion-DC by setting Static IP of 10.0.0.5/24, default gateway of 10.0.0.1 (host NAT), and DNS temp 10.0.0.5.
+2. AD DS Role: Add 'Active Directory Domain Services' to the server manager and complete the setup properly. Run dcpromo and create a new 'forest' of 'corp.orion-dc.com'.
+3. DNS Role: Use the server manager and properly configure the 'DNS Server' properly. Ensure that DNS listens to all interfaces (no port forwarding yet).
+4. DHCP Role: Add Roles > DHCP Server. Auth in AD (skip for now), scope 10.0.0.0/24 (range 10.0.0.100-200, exclude 10.0.0.1-20), router 10.0.0.1, DNS 10.0.0.5. Activate scope.
+6. Post-Promo: DNS zone auto-creates (corp.orion.local forward/reverse). Verify SRV records (nslookup). Restart Netlogon.
+7. Join Workstations:
+  - Win (Admin/HR): Set DNS 10.0.0.5 only, reboot. Sysdm.cpl > Change Settings > Domain: corp.orion.local (Administrator/@Deeboodah1!). Reboot.
+  - Linux (Orion-LinuxClient):
+7. Users & Weaknesses: ADUC > Users: jane.orion@corp.orion.local (password123!), sec-admin. Service acct svc-roast, SPN setspn -s MSSQLSvc/orion-dc.corp.orion.local:1433 svc-roast.
+8. GPOs: GPMC > Default Domain Policy: Password min 8 chars, no complexity (Edit > Computer/User Config > Policies > Windows Settings > Security > Account Policies).
 
 **Issues**: Linux Kerberos bombed from systemd-resolved—forced DC DNS only. Time skew blocked joins (ntpd).
 **Learned**: AD lives on DNS, test SRV records (nslookup _ldap._tcp.corp.orion.local). Linux joins suck in prod too.
-
-Screenshots: [AD Users](screenshots/ad-users.png) | [Domain Join](screenshots/linux-join.png)
 
 ### 3. Wazuh Deployment & Base Detection (Complete)
 **Status: ✅ Agents Everywhere**
