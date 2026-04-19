@@ -29,7 +29,7 @@ This is the **Orion Project**. It is essentially a homelab and my attempt at bui
 - Wazuh Manager setup taught me how to properly look for logs pertaining to certain parameters, how to setup specific alerts/monitors and file integrity checks based on specific triggers (such as parameters), and how to setup actions once an alert is caused.
 - Learned how attackers learn about a network through reconnaissance (using tools like nmap towards specific ports), how an attacker gains initial network through brute-force tactics (using tools like hydra, and email phishing), how an attacker uses inference to escalate their privilege within the network by moving from workstation to workstation and learning more about the network (using nxc or evil-winrm to gain access to windows workstations), how an attacker exfiltrates data using tools like scp, and how an attacker maintains privilege within the network (creating a reverse shell protocol that activates at specific times).
 
-## Lab Progress
+## Basic Lab Setup
 
 ### 1. Environment Setup
 **Status: ✅ Done**
@@ -120,42 +120,28 @@ Controlled vulnerabilities within our enterprise environment such as no alert de
 
 **Learned**: Misconfigurations or basic configurations might result in a potential pathway for attackers to gain access into the network.
 
-#### 4.4 Network Exposures
+#### 4.3 Network Exposures
 **Steps**:
-1. Host firewalls off (netsh advfirewall set allprofiles state off).
-2. Ports open: 445 SMB, 3389 RDP, 5985 WinRM.
-3. DVWA vuln webapp in DMZ VM.
+1. No active strong firewall to accept incoming and outgoing data transfers.
+2. Ports left open within both Windows and Linux workstations.
 
-**Learned**: No segments = easy pivots. Need router ACLs later.
+**Learned**: Exposures result in pathways for attacker to gain access into a network
 
-Screenshots: [BloodHound Paths](screenshots/bloodhound.png) | [Open Shares](screenshots/smb-enum.png)
+### 5. End-to-end basic attack simulation "From Initial Access to Persistence" 
+**Status: ✅ Done**
 
-**Overall**: Vulns stack—creds + unpatched = full chains. Expect MS17-010 → hashes → DCSync.
+Conducted a simple simulation of how an attacker would gain access into the orion network and eventually gain privilege and persist within the network. 
+**Steps** are as follows:
+1. Reconnaissance + Initial Access
+2. Privilege Escalation
+3. Data Exfiltration
+4. Persistence
 
-### 5. Detection & Alerts Tuning for Attacks
-**Status: ⏳ Tuning Now**
-
-Wazuh prepped for red phase, custom rules for TTPs.
-
-**Steps**:
-1. Sigma rules: Kerberoast (4769 RC4), ASREPRoast, PsExec (4688).
-2. AD audit GPO: Logon/Logoff, Object Access on.
-3. WinEvent forward: Security, Sysmon later.
-4. Dashboards: ATT&CK maps, baselines.
-5. Test `Invoke-Kerberoast`—alert rule 51003 fired.
-
-**Issues**: Legit logon noise—ossec.conf whitelist.
-**Learned**: Thresholds key (>10 TGT/min = roast). Sysmon+Wazuh = EDR vibes.
-
-## Tech Stack
-- Hypervisor: VirtualBox
-- SIEM: Wazuh/ELK
-- Vuln Apps: DVWA, weak services
-- Attacks: BloodHound, CrackMapExec (soon)
 
 ## Future Ideas
-- Attack runs: Phish → exploit → AD ownage.
-- K8s cloud shift for hybrid.
-- [ideas.md](ideas.md) has more.
+- More simulations on cyberattacks, log analysis, and further configuration and networks setup that promotes better security across the orion network.
+- Isolate the network with a pfsense firewall so host system is protected and is unaffected by any form of virus analysis
+- Shift network into docker containers properly managed with k8s
+- Shift on-premise network into a more cloud-based infrastructu
 
 **Progress**: Net built, vulns planted, detections set. Red team time. Updated: April 11, 2026.
