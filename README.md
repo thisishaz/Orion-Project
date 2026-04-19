@@ -31,7 +31,7 @@ This is the **Orion Project**. It is essentially a homelab and my attempt at bui
 
 ## Lab Progress
 
-### 1. Environment Setup (Complete)
+### 1. Environment Setup
 **Status: ✅ Done**
 
 
@@ -60,7 +60,7 @@ Key VMs & Specs:
 - Orion network layout ensures that everything is properly segmented and checked for, so visualization of said enterprise network is easy to understand and maintain.
 
 
-### 2. Active Directory, Domain Setup and Workstation Connection (Complete)
+### 2. Active Directory, Domain Setup and Workstation Connection
 **Status: ✅ Done**
 
 'orion-dc' handles AD, DNS, and DHCP. It serves as the backbone of the network as it handles authentication, authorization, name resolution and acts as the main gateway between the host system and the enterprise network (will be fully adapted and further isolated in the future).
@@ -75,7 +75,7 @@ Key VMs & Specs:
     - **Linux**: Set domain connection to non-native windows using Samba/Winbind configuration via Kerberos
 
 
-### 3. Wazuh Deployment & Base Detection (Complete)
+### 3. Wazuh Deployment & Base Detection
 **Status: ✅ Done**
 
 Manager on Orion-SecBox (Ubuntu 10.0.0.10), agents deployed to all endpoints (DC, Admin, HR, LinuxClient). Central SIEM for logs, vulns, FIM.
@@ -103,31 +103,22 @@ Manager on Orion-SecBox (Ubuntu 10.0.0.10), agents deployed to all endpoints (DC
 ### 4. Creating Vulnerable Environment
 **Status: ✅ Done**
 
-Controlled vulns/misconfigs for attack chains: foothold → lateral → domain dom. Firewalls off for now.
+Controlled vulnerabilities within our enterprise environment such as no alert detection for certain aspects, open ports within certain workstations. These are vulnerabilities that SHOULD NOT exist in a real workplace, however are being made vulnerable within this project to learn how attackers gain a foothold within networks and gain sensitive data.
 
 #### 4.1 Weak Credentials & Accounts
 **Steps**:
-1. password123! everywhere (jane, hr-user, svc-sql).
-2. Local admins same pw workstations.
-3. svc-roast SPN: `setspn -s MSSQLSvc/orion-admin.corp.orion.local:1433 svc-roast`.
+1. @password123! for all user accounts
+2. Root accounts for certain workstations are made to be VERY weak and vulnerable.
 
-**Learned**: Reuse = free wins for attackers. BloodHound paths go nuts. Wazuh auth logs catch it.
+**Learned**: Predictable and easy passwords must be avoided as brute-force tactics can be leveraged to gain initial access within the network (using tools like Hydra).
 
-#### 4.2 Unpatched Software & Services
+#### 4.2 Misconfigurations for Abuse
 **Steps**:
-1. Win VMs no updates, SMBv1 on (`Enable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol`).
-2. Old IIS on DC (no TLS), EternalBlue tester.
-3. Linux: Vulnerable Apache 2.4, SSH root login yes.
+1. Basic configurations for AD, non proper measures to counter potential access by attackers.
+2. Shares wide open Administrator access on all accounts
+3. Enabled RDP
 
-**Learned**: Wazuh spots 'em (CVE-2017-0144). Prod: Patch automation or die.
-
-#### 4.3 Misconfigurations for Abuse
-**Steps**:
-1. AD: Unconstrained delegation svc-roast, Domain Admins overperms.
-2. Shares wide open C$/ADMIN$ (icacls /grant Everyone:F).
-3. RDP/WinRM everywhere, no NLA.
-
-**Learned**: Kerberoast/PtH/delegation abuse gold. PowerView enum first.
+**Learned**: Misconfigurations or basic configurations might result in a potential pathway for attackers to gain access into the network.
 
 #### 4.4 Network Exposures
 **Steps**:
